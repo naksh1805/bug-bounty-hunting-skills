@@ -1,0 +1,7 @@
+id,method,shape,example_url,owner_identity,has_object_ref,action_type,in_scope,status,outcome,notes
+1,GET,/api/orders/{id},/api/orders/1001,alice,yes,read,yes,pending,,baseline owner=alice
+2,PATCH,/api/orders/{id},/api/orders/1001,alice,yes,write,yes,pending,,
+3,DELETE,/api/orgs/{orgId}/members/{memberId},/api/orgs/42/members/9,alice,yes,write,yes,pending,,admin-only in UI; use self-victim to prove
+4,GET,/api/me/orders,/api/me/orders,alice,no,read,yes,pending,,check for silent ?userId override
+5,POST,/api/orgs/{orgId}/invites,/api/orgs/42/invites,alice,yes,privileged,yes,pending,,invite flow; mass-assign role?
+6,GET,/graphql,/graphql,alice,yes,read,yes,pending,,GraphQL — see ref 07

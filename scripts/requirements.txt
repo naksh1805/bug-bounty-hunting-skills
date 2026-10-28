@@ -1,0 +1,6 @@
+# bac-hunter helper scripts — dependencies
+#
+# parse_burp.py  : standard library only (no install needed)
+# report.py      : standard library only (no install needed)
+# replay.py      : needs `requests`
+requests>=2.31.0
