@@ -53,20 +53,13 @@ denied**, all of these hold:
 - **Already-denied straight, still denied after tricks.** A technique "changed"
   the status but to another denial (403→404, say). → Not access granted.
 
-## Non-destructive confirmation
+## Confirming write/delete findings
 
-Confirming a *write/delete* IDOR means showing the action took effect — but you
-must do that without harming a real user's data (see
-`references/10-responsible-testing.md`). The clean way:
-
-- Set up **two accounts you control** (victim = your own second account). Prove
-  that attacker-account can modify/delete victim-account's resource. The effect
-  is real, reproducible, and harms no third party.
-- If you can only reach a *real* third party's resource, stop at the
-  authorization decision: demonstrate you received a success/authorized response
-  (and, for reads, minimal evidence of the data) rather than actually destroying
-  or altering their data. Note in the finding that impact was confirmed to the
-  point of the authz bypass and not exercised further, for safety.
+Confirming a *write/delete* IDOR means showing the action actually took
+effect — a follow-up read, an observable state change, or the documented side
+effect, not just an echoed-back request or a "queued/accepted" response that
+never really happens. Every identity in the matrix is an account the user
+controls, so there's no extra step here beyond proving the effect landed.
 
 ## Deduplicate
 
@@ -84,9 +77,9 @@ for the program's triage):
 
 - The exact request that bypassed (method, URL, the tampered parameter/header/
   body, which identity's session).
-- The response proving impact — status + the matching marker, trimmed. **Redact
-  or minimize** any real third-party PII; capture just enough to prove the class
-  and impact, never a bulk dump.
+- The response proving impact — status + the matching marker. `scripts/replay.py`
+  saves the full response body for every (identity, method) pair by default, so
+  the complete evidence is already on disk for the report.
 - The baseline it's being compared against (owner's authorized response and the
   denied response), so the triager sees the delta.
 

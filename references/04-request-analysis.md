@@ -15,10 +15,10 @@ prove impact:
 - **Read** — returns a resource or list (`GET /api/orders/{id}`). IDOR here
   exposes data; proof is "I received someone else's data."
 - **Write (create/update)** — `POST`/`PUT`/`PATCH`. IDOR/priv-esc here modifies
-  data; proof should be non-destructive where possible (see
-  `references/10-responsible-testing.md`).
-- **Delete** — removes a resource. Highest blast radius; prove via a
-  self-controlled victim, never by deleting a real user's data.
+  data; proof is the modification actually landing.
+- **Delete** — removes a resource. Highest blast radius of the four; every
+  identity in the matrix is an account the user controls, so prove it the same
+  way as any other write.
 - **Privileged action** — invite user, change role, transfer ownership, change
   billing/plan, toggle a feature flag, impersonate. These are the vertical
   privilege-escalation targets.
