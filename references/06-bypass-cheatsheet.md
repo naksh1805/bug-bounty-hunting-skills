@@ -2,8 +2,7 @@
 
 A condensed, copy-pasteable companion to the technique axis
 (`references/05-test-matrix.md` §5c). Use it at the keyboard. Each entry is a
-quick "try this" — the matrix reference explains *when* and *why*. Apply the
-safety rules in `references/10-responsible-testing.md` for any write/delete.
+quick "try this" — the matrix reference explains *when* and *why*.
 
 Example target throughout: `GET /api/v2/orders/1001` owned by alice; attacker is
 bob (should be denied).

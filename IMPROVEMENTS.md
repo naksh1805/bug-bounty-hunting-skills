@@ -50,30 +50,16 @@ These are things the original didn't cover that matter in real engagements:
 - **A quick bypass cheatsheet** separate from the narrative matrix, for
   at-the-keyboard lookup. (`references/06`)
 
-## Safety / ethics layer (the important addition)
+## Scope/authorization layer
 
-The original was scoped to bug bounty / VDP — good — but didn't address how to
-test without harming real users. Added throughout and centralized in
-`references/10-responsible-testing.md`:
-
-- **Self-controlled victim accounts** for any write/delete proof: show
-  attacker-account-A can act on victim-account-B when both are yours, so no real
-  user's data is touched. Most programs require this.
-- **Non-destructive proof**: when only a real third party's resource is
-  reachable, stop at the authorization decision rather than actually
-  deleting/altering their data, and say so in the finding.
-- **PII minimization**: capture the minimum marker that proves impact; never
-  bulk-collect or enumerate thousands of IDs to "show scale."
-- **Rate-limiting etiquette / no DoS**: throttle; `replay.py` has a built-in
-  delay that's on by default.
-- **"Prove it, don't exercise it"** framing: one object is enough; don't pivot,
-  persist, or exfiltrate beyond proof; disclose your own mistakes promptly.
-
-These also show up as guard rails in the tooling: `replay.py` refuses
-PUT/PATCH/DELETE unless you pass both `--allow-destructive` and
-`--i-am-using-a-self-owned-victim`, keeps a rate-limit delay on by default,
-summarizes responses rather than dumping bodies unless you opt in, and flags
-"2xx-but-error-like" responses so you don't over-report.
+The one hard boundary kept throughout, centralized in
+`references/10-responsible-testing.md`: only test hosts/paths in-scope for the
+given program URL, and only authenticate with identities the user provided —
+every identity in the matrix, including cross-org/other-tenant ones, is an
+account the user controls. There's no separate "destructive"/"rate"/"PII"
+guard layer on top of that: `replay.py` tests every method the same way, saves
+full response bodies by default, and runs with no artificial delay unless
+`--delay` is passed.
 
 ## What was deliberately kept
 

@@ -26,15 +26,13 @@ browsing, and other authorization bypasses, then reports them as P1–P4.
 - **Confirms** each candidate (kills false positives) before calling it a finding.
 - **Classifies** severity P1–P4 and produces a terse report.
 
-## Authorization & safety — read first
+## Authorization — read first
 
-This skill is strictly for **authorized** testing. No program scope → no testing.
-It is built to prove authorization boundaries are broken using the smallest,
-gentlest demonstration possible: in scope, with your own test accounts, without
-touching real users' data more than it takes to show the bug. The full rules —
-rate-limiting etiquette, non-destructive proof via self-controlled victim
-accounts, PII minimization — are in `references/10-responsible-testing.md`, and
-they override speed or thoroughness every time.
+This skill is strictly for **authorized** testing. No program scope → no
+testing. See `references/10-responsible-testing.md` for the scope/authorization
+rules — those are the only hard boundary; every identity in the test matrix,
+including cross-org/other-tenant ones, is an account you control, so the
+testing itself (methods, evidence capture, request volume) runs unthrottled.
 
 ## Layout
 
@@ -53,7 +51,7 @@ bac-hunter/
 │   ├── 07-graphql-authz.md
 │   ├── 08-confirmation.md        # false-positive killing
 │   ├── 09-severity-rubric.md     # P1–P4
-│   └── 10-responsible-testing.md # scope, safety, non-destructive proof
+│   └── 10-responsible-testing.md # scope & authorization
 ├── templates/
 │   ├── identities.md             # identity + ownership table
 │   ├── worklist.csv              # request-shape tracker
@@ -61,7 +59,7 @@ bac-hunter/
 │   └── final-report.md           # assembled report skeleton
 └── scripts/
     ├── parse_burp.py             # Burp XML export -> JSON/CSV worklist (no traffic)
-    ├── replay.py                 # replay ONE shape across identities + diff (rate-limited, destructive-guarded)
+    ├── replay.py                 # replay ONE shape across identities + diff (all methods, full evidence by default)
     ├── report.py                 # findings JSON -> severity-sorted report (no traffic)
     └── requirements.txt          # `requests` (for replay.py only)
 ```
@@ -83,13 +81,12 @@ pip install -r scripts/requirements.txt          # only needed for replay.py
 # 1) turn your Burp export into a worklist
 python3 scripts/parse_burp.py export.xml --csv worklist.csv --in-scope example.com
 
-# 2) test one shape across identities (safe methods; destructive blocked by default)
+# 2) test one shape across identities (all methods, full response saved)
 python3 scripts/replay.py --request req.json --identities ids.json \
-    --owner alice --marker "INV-A-1001"
+    --owner alice --marker "INV-A-1001" --methods GET,POST,PUT,PATCH,DELETE,OPTIONS
 
 # 3) assemble confirmed findings into a report
 python3 scripts/report.py findings.json --program "Acme VDP" --detailed -o report.md
 ```
 
-See each script's header for its full argument list and the safety flags on
-`replay.py`.
+See each script's header for its full argument list.

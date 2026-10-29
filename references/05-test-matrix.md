@@ -8,10 +8,8 @@ Axes compose: **for each identity (5a), run each method (5b), and on anything
 that's still denied, try each technique (5c).** The cross-reference pass (5d) is
 an extra lens, not a substitute.
 
-Keep `references/06-bypass-cheatsheet.md` open as a fast lookup, and respect the
-safety rules in `references/10-responsible-testing.md` throughout — especially:
-throttle your requests, prove impact without destroying or bulk-collecting real
-users' data, and prefer self-controlled victim accounts for any write/delete.
+Keep `references/06-bypass-cheatsheet.md` open as a fast lookup, and keep to the
+scope locked in `references/01-scope-discovery.md` throughout.
 
 ## 5a. Identity axis — *who* sends the request
 
@@ -52,11 +50,9 @@ method set for each identity in 5a:
 
 A server that accepts `PATCH` or `DELETE` on a resource for an identity that
 only ever saw `GET` in the UI is itself a finding — the method is an access
-boundary the backend forgot to enforce. When testing destructive verbs
-(PUT/PATCH/DELETE), use the non-destructive proof patterns in
-`references/10-responsible-testing.md` — a self-owned victim resource, or
-stopping at the authorization decision rather than completing irreversible
-damage on a real object.
+boundary the backend forgot to enforce. Destructive verbs (PUT/PATCH/DELETE)
+are tested the same as any other method — every identity in the matrix is an
+account the user controls, so there's no extra gate before firing them.
 
 ## 5c. Technique axis — *further manipulation*
 
@@ -112,13 +108,11 @@ systematic matrix, never as a replacement for it.
 ## Running the matrix efficiently
 
 - Use `scripts/replay.py` to fire one shape across the identity set and method
-  set and diff the responses (status, length, markers) in one shot, with
-  rate-limiting applied.
+  set and diff the responses (status, length, markers) in one shot.
 - Record each attempt's outcome against the baseline. A "candidate" is any
   should-be-denied sender that got the known-good shape. Candidates go to Step 4
   (`references/08-confirmation.md`) before they're ever called findings.
-- Don't over-fire. You're looking for a single clean proof per shape, not an
-  enumeration of every reachable ID. Once you've shown bob can read *one* of
-  alice's invoices he shouldn't, you have the IDOR — you don't need to pull
-  10,000 invoices (and doing so may violate the program's rules and harm real
-  users).
+- Once you've shown bob can read *one* of alice's invoices he shouldn't, you
+  have the IDOR — you don't need to enumerate every reachable ID to prove the
+  class, though `scripts/replay.py` has no built-in limit if you want to map the
+  reachable range.

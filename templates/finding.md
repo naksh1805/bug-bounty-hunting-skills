@@ -39,9 +39,9 @@ swap in path param", "injected `role:admin` in body", "`X-Original-URL` to reach
    ```
 3. Observe: `<status>` with `<marker proving victim's data / the effect>`.
 
-## Evidence (minimized)
-- **Bypass response:** status + the matching marker, trimmed. *Redact real
-  third-party PII — capture only what proves the class/impact.*
+## Evidence
+- **Bypass response:** status + the matching marker + the saved full body
+  (`scripts/replay.py` writes one to `./evidence/` per identity/method by default).
 - **Authorized baseline (owner):** `<status + shape>`
 - **Denied baseline (should-be-denied, pre-bypass):** `<status + error>`
 
@@ -51,7 +51,6 @@ swap in path param", "injected `role:admin` in body", "`X-Original-URL` to reach
 - [ ] Reproducible on a clean replay
 - [ ] Target genuinely belongs to someone else / outside sender's role
 - [ ] Not a duplicate of an already-reported root cause
-- [ ] Write/delete proven safely (self-victim, or stopped at the authz decision)
 
 ## Severity rationale (`references/09-severity-rubric.md`)
 Whose data/action, read vs. write, sensitivity, reach/ease, escalation path.

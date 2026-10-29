@@ -3,8 +3,8 @@
 GraphQL concentrates a lot of surface behind one endpoint (usually
 `/graphql`), and its authorization bugs look different from REST's. If the
 traffic contains GraphQL operations, run these checks in addition to the general
-matrix. Everything here still obeys scope and the safety rules in
-`references/10-responsible-testing.md`.
+matrix. Everything here still stays inside the scope locked in
+`references/01-scope-discovery.md`.
 
 ## Why GraphQL authz breaks
 
@@ -55,8 +55,7 @@ raw local ID where a global ID is expected, and vice versa.
 Mutations are the write surface — invites, role changes, transfers, deletes. Run
 each privileged mutation as an identity that should be denied, and try mass
 assignment on mutation input objects (extra `role`, `ownerId`, `orgId`,
-`isAdmin` fields the input type accepts but the UI never sends). For destructive
-mutations, use a self-owned victim per `references/10-responsible-testing.md`.
+`isAdmin` fields the input type accepts but the UI never sends).
 
 ### 4. Introspection as a map
 
